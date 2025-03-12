@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ETHICAL CHATBOT 🌿</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+  <script>
+    function toggleTheme() {
+    document.body.classList.toggle("dark-mode");
+    // Save theme preference in local storage
+    const isDark = document.body.classList.contains("dark-mode");
+    localStorage.setItem("theme", isDark ? "dark" : "light");
+  }
+
+  // Load theme preference on page load
+  window.onload = function() {
+    const savedTheme = localStorage.getItem("theme");
+    if (savedTheme === "dark") {
+      document.body.classList.add("dark-mode");
+    }
+  };
+    async function sendMsg() {
+      let chatBox = document.getElementById("chat");
+      let input = document.getElementById("input");
+      let userMessage = input.value.trim();
+      if (!userMessage) return;
+
+      let userDiv = document.createElement("div");
+      userDiv.className = "chat-message user";
+      userDiv.textContent = "🌱 You: " + userMessage;
+      chatBox.appendChild(userDiv);
+      input.value = "";
+      chatBox.scrollTop = chatBox.scrollHeight;
+
+      // Show typing indicator
+      let typingDiv = document.createElement("div");
+      typingDiv.className = "chat-message bot typing";
+      typingDiv.innerHTML = "🌿 Bot is typing...";
+      chatBox.appendChild(typingDiv);
+
+      try {
+        // Send the message to Flask backend
+        let response = await fetch("/chat", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ message: userMessage })
+        });
+
+        let data = await response.json();
+        chatBox.removeChild(typingDiv);
+
+        let botDiv = document.createElement("div");
+        botDiv.className = "chat-message bot";
+        botDiv.textContent = "🌿 Bot: " + data.response;
+        chatBox.appendChild(botDiv);
+        chatBox.scrollTop = chatBox.scrollHeight;
+      } catch (error) {
+        chatBox.removeChild(typingDiv);
+        let errorDiv = document.createElement("div");
+        errorDiv.className = "chat-message bot";
+        errorDiv.textContent = "⚠️ Error connecting to the server.";
+        chatBox.appendChild(errorDiv);
+      }
+    }
+
+    // Send message on Enter key press
+    document.addEventListener("DOMContentLoaded", function () {
+      document.getElementById("input").addEventListener("keydown", function (event) {
+        if (event.key === "Enter") {
+          event.preventDefault();
+          sendMsg();
+        }
+      });
+    });
+  </script>
+</head>
+<body>
+  <div class="chat-container">
+    <div class="chat-header">
+      <span>🌿 Ethical Policy Chatbot 🌿</span>
+      <button class="toggle-btn" onclick="toggleTheme()">🌗☀️🌙</button>
+    </div>
+    <div id="chat"></div>
+    <div class="chat-input">
+      <input id="input" type="text" placeholder="Type a message...">
+      <button onclick="sendMsg()">Send</button>
+    </div>
+  </div>
+</body>
+</html>
+
+
+
+
+
+
+
+
+
+
+
+
