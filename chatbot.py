@@ -6,7 +6,7 @@ def get_response(user_input):
     prompt = f"{user_input}"
     
     
-    genai.configure(api_key="AIzaSyBLF9puq46wY5MCz_NLOa8CaUQt8E49FqU")
+    genai.configure(api_key="AIzaSyBHcVDl5errUlW9h-nfksSR2QCXtgj4vNI")
     #print(prompt)
 
     # Create the model
